@@ -1,0 +1,10 @@
+Package: AMMIT
+Title: Automated mIHC Marker Intensity Thresholds
+Version: 0.0.0.9000
+Authors@R: 
+    person("Patrick", "Crock", , "patrick.crock@petermac.org", role = c("aut", "cre"))
+Description: AMMIT is designed to streamline the processing of many mIHC samples, by applying a skew-normal mixture model trained on a small subset of samples.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
