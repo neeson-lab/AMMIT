@@ -9,7 +9,7 @@
 #' @examples
 infer_manual_thresholds <- function(spe, markers) {
 
-  if (is(spe, "SpatialExperiment")) { stop("Your `spe` object is not a SpatialExperiment object!") }
+  if (!is(spe, "SpatialExperiment")) { stop("Your `spe` object is not a SpatialExperiment object!") }
   if (!"reference" %in% names(assays(spe))) { stop("No reference data found in your SpatialExperiment object. Have you added reference data?") }
   if (!"data" %in% names(assays(spe))) { stop("No intensity data found in your SpatialExperiment object. Have you added intensity data?") }
   if (!any(markers %in% rownames(spe))) { stop("None of the specified markers were found in your SpatialExperiment object!")}
