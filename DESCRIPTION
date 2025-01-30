@@ -12,4 +12,5 @@ Imports:
     dplyr,
     methods,
     SpatialExperiment,
+    SummarizedExperiment,
     utils
