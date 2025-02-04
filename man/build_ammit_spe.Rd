@@ -2,10 +2,11 @@
 % Please edit documentation in R/build_ammit_spe.R
 \name{build_ammit_spe}
 \alias{build_ammit_spe}
-\title{Title}
+\title{Build a SpatialExperiment object suitable for AMMIT}
 \usage{
 build_ammit_spe(
   method = c("HALO", "manual"),
+  reference,
   ...,
   intensity_matrix = NULL,
   reference_matrix = NULL,
@@ -15,6 +16,8 @@ build_ammit_spe(
 }
 \arguments{
 \item{method}{Character; "HALO" if reading from a HALO output file; otherwise, "manual" if you are providing intensity matrix, reference matrix, spatial coords, etc. directly.}
+
+\item{reference}{Logical; whether the input file has manual thresholds computed, i.e. whether the data for reference_matrix is present and should be included in the output.}
 
 \item{...}{Arguments to be passed to build_ammit_spe_HALO, if method "HALO" is selected.}
 
@@ -30,5 +33,16 @@ build_ammit_spe(
 A SpatialExperiment object with assay 'data' containing the intensities per cell for each marker, spatial coordinates, metadata (in colData), and positive classification (if provided) in the assay 'reference'.
 }
 \description{
-Title
+Build a SpatialExperiment object suitable for AMMIT
+}
+\examples{
+HALO_filepath <- system.file("extdata", "halo_output.csv", package="AMMIT")
+markers <- c("M1", "M2", "M3", "M4", "M5", "M6", "M7")
+locations <-  c("Nucleus", "Cytoplasm", "Nucleus", "Cytoplasm", "Cytoplasm", "Cytoplasm", "Cytoplasm")
+spe <- build_ammit_spe(method="HALO",
+                       HALO_filepath = HALO_filepath,
+                       markers = markers,
+                       reference = TRUE,
+                       locations = locations,
+                       filter_dapi = TRUE)
 }

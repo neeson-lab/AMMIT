@@ -2,7 +2,7 @@
 % Please edit documentation in R/build_ammit_spe_HALO.R
 \name{build_ammit_spe_HALO}
 \alias{build_ammit_spe_HALO}
-\title{Title}
+\title{Build a SpatialExperiment object from a HALO output suitable for AMMIT}
 \usage{
 build_ammit_spe_HALO(
   HALO_filepath,
@@ -27,5 +27,15 @@ build_ammit_spe_HALO(
 A SpatialExperiment object with assay 'data' containing the intensities per cell for each marker, spatial coordinates, metadata (in colData), and positive classification (if provided) in the assay 'reference'.
 }
 \description{
-Title
+Build a SpatialExperiment object from a HALO output suitable for AMMIT
+}
+\examples{
+HALO_filepath <- system.file("extdata", "halo_output.csv", package="AMMIT")
+markers <- c("M1", "M2", "M3", "M4", "M5", "M6", "M7")
+locations <-  c("Nucleus", "Cytoplasm", "Nucleus", "Cytoplasm", "Cytoplasm", "Cytoplasm", "Cytoplasm")
+spe <- build_ammit_spe_HALO(HALO_filepath = HALO_filepath,
+                            markers = markers,
+                            reference = TRUE,
+                            locations = locations,
+                            filter_dapi = TRUE)
 }

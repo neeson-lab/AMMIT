@@ -14,3 +14,9 @@ Imports:
     SpatialExperiment,
     SummarizedExperiment,
     utils
+Depends: 
+    R (>= 3.5)
+LazyData: true
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

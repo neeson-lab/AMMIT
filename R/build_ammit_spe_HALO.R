@@ -1,4 +1,4 @@
-#' Title
+#' Build a SpatialExperiment object from a HALO output suitable for AMMIT
 #'
 #' @param HALO_filepath Character; path to your HALO output file (.csv or .tsv), generally named 'Total_Object_Results.csv'
 #' @param markers Character; a vector of the markers (i.e., proteins being measured) in the HALO output
@@ -10,6 +10,14 @@
 #' @export
 #'
 #' @examples
+#' HALO_filepath <- system.file("extdata", "halo_output.csv", package="AMMIT")
+#' markers <- c("M1", "M2", "M3", "M4", "M5", "M6", "M7")
+#' locations <-  c("Nucleus", "Cytoplasm", "Nucleus", "Cytoplasm", "Cytoplasm", "Cytoplasm", "Cytoplasm")
+#' spe <- build_ammit_spe_HALO(HALO_filepath = HALO_filepath,
+#'                             markers = markers,
+#'                             reference = TRUE,
+#'                             locations = locations,
+#'                             filter_dapi = TRUE)
 build_ammit_spe_HALO = function (HALO_filepath,
                                  markers,
                                  reference,
@@ -36,11 +44,11 @@ build_ammit_spe_HALO = function (HALO_filepath,
   marker.matches <- lapply(markers, \ (x) grep(colnames(data), pattern=paste0(x, ".*Intensity")))
   if (any(sapply(marker.matches, length)>1)) {
     if (is.null(locations)) {
-      warning("The following markers matched to more than one intensity column: ", markers[sapply(marker.matches, length) > 1])
-      warning("Taking the first option in these cases. To avoid this behaviour, specify location.")
+      warning("The following markers matched to more than one intensity column: ", paste(markers[sapply(marker.matches, length) > 1], collapse=" "))
+      warning("Taking the first option in these cases. To avoid this behaviour, specify `location`.")
       marker.matches <- sapply(marker.matches, min)
     } else {
-      marker.matches <- lapply(markers, \ (x) grep(colnames(data), pattern=paste0(x, ".*", locations, ".*Intensity")))
+      marker.matches <- lapply(markers, \ (x) grep(x = colnames(data), pattern=paste0(x, ".*", locations[match(x, markers)], ".*Intensity")))
       marker.matches <- unlist(marker.matches)
     }
   } else {
@@ -58,7 +66,7 @@ build_ammit_spe_HALO = function (HALO_filepath,
         warning("Taking the first option in these cases. To avoid this behaviour, specify location.")
         marker.matches <- sapply(marker.matches, min)
       } else {
-        marker.matches <- lapply(markers, \ (x) grep(colnames(data), pattern=paste0(x, ".*", locations, ".*Classification")))
+        marker.matches <- lapply(markers, \ (x) grep(x = colnames(data), pattern=paste0(x, ".*", locations[match(x, markers)], ".*Classification")))
         marker.matches <- unlist(marker.matches)
       }
     } else {
@@ -69,16 +77,15 @@ build_ammit_spe_HALO = function (HALO_filepath,
     reference_matrix <- t(reference_matrix)
   }
 
-  meta_selection <- grep(colnames(data), pattern="^Object|DAPI.*Classification", value = TRUE)
+  meta_selection <- grep(colnames(data), pattern=paste(markers, collapse="|"), value = TRUE, invert = TRUE)
   if (filter_dapi) {
-    dapi.column <- grep(colnames(data), pattern="DAPI.*Classification", value = TRUE)
+    dapi.column <- grep(colnames(data), pattern="DAPI.*Classification", value = TRUE)[1]
     }
   col_data <- data[, meta_selection]
 
-  spatial_coords <- data[, c("XMin","XMax", "YMin", "YMax")]
-  spatial_coords <- spatial_coords |>
-    dplyr::mutate(Cell.X.Position=(XMin+XMax) / 2, Cell.Y.Position=(YMin+YMax) / 2) |>
-    dplyr::select(Cell.X.Position, Cell.Y.Position) |>
+
+  spatial_coords <- data.frame("Cell.X.Position"=(data$XMin+data$XMax)/2,
+                               "Cell.Y.Position"=(data$YMin+data$YMax)/2) |>
     as.matrix()
 
   spe <- SpatialExperiment::SpatialExperiment(assays=list("data"=intensity_matrix, "reference"=reference_matrix), colData = col_data, spatialCoords = spatial_coords)

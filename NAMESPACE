@@ -3,3 +3,5 @@
 export(build_ammit_spe)
 export(build_ammit_spe_HALO)
 export(infer_manual_thresholds)
+importFrom(SummarizedExperiment,assay)
+importFrom(SummarizedExperiment,rowData)

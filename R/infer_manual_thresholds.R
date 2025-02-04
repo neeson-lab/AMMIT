@@ -1,4 +1,4 @@
-#' Title
+#' Infer manual thresholds for marker intensities from pre-existing classifications
 #'
 #' @param spe A SpatialExperiment object with assays 'data' and 'reference' present.
 #' @param markers A character vector of markers matching, at least partially, to the rownames of your SpatialExperiment object.
@@ -6,7 +6,14 @@
 #' @return The input SpatialExperiment object, with manual thresholds for each of the elements in markers added into the rowData under manual_thresholds
 #' @export
 #'
+#' @importFrom SummarizedExperiment rowData
+#' @importFrom SummarizedExperiment assay
+#'
 #' @examples
+#' data("ammit_spe_dummy")
+#' markers <- c("M1", "M2", "M3", "M4", "M5", "M6", "M7")
+#' ammit_spe_dummy <- infer_manual_thresholds(ammit_spe_dummy, markers=markers)
+#' SummarizedExperiment::rowData(ammit_spe_dummy)
 infer_manual_thresholds <- function(spe, markers) {
 
   if (!methods::is(spe, "SpatialExperiment")) {
@@ -40,4 +47,5 @@ infer_manual_thresholds <- function(spe, markers) {
     SummarizedExperiment::rowData(spe)$manual_threshold <- output$manual_threshold
   }
 
+  return(spe)
 }

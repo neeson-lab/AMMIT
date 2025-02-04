@@ -2,7 +2,7 @@
 % Please edit documentation in R/infer_manual_thresholds.R
 \name{infer_manual_thresholds}
 \alias{infer_manual_thresholds}
-\title{Title}
+\title{Infer manual thresholds for marker intensities from pre-existing classifications}
 \usage{
 infer_manual_thresholds(spe, markers)
 }
@@ -15,5 +15,11 @@ infer_manual_thresholds(spe, markers)
 The input SpatialExperiment object, with manual thresholds for each of the elements in markers added into the rowData under manual_thresholds
 }
 \description{
-Title
+Infer manual thresholds for marker intensities from pre-existing classifications
+}
+\examples{
+data("ammit_spe_dummy")
+markers <- c("M1", "M2", "M3", "M4", "M5", "M6", "M7")
+ammit_spe_dummy <- infer_manual_thresholds(ammit_spe_dummy, markers=markers)
+SummarizedExperiment::rowData(ammit_spe_dummy)
 }
