@@ -37,8 +37,10 @@ Build a SpatialExperiment object suitable for AMMIT
 }
 \examples{
 HALO_filepath <- system.file("extdata", "halo_output.csv", package="AMMIT")
-markers <- c("M1", "M2", "M3", "M4", "M5", "M6", "M7")
-locations <-  c("Nucleus", "Cytoplasm", "Nucleus", "Cytoplasm", "Cytoplasm", "Cytoplasm", "Cytoplasm")
+markers <- c("M1", "M2", "M3", "M4",
+             "M5", "M6", "M7")
+locations <-  c("Nucleus", "Cytoplasm", "Nucleus", "Cytoplasm",
+                "Cytoplasm", "Cytoplasm", "Cytoplasm")
 spe <- build_ammit_spe(method="HALO",
                        HALO_filepath = HALO_filepath,
                        markers = markers,

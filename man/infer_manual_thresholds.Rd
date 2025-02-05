@@ -4,15 +4,17 @@
 \alias{infer_manual_thresholds}
 \title{Infer manual thresholds for marker intensities from pre-existing classifications}
 \usage{
-infer_manual_thresholds(spe, markers)
+infer_manual_thresholds(object, markers, ...)
 }
 \arguments{
-\item{spe}{A SpatialExperiment object with assays 'data' and 'reference' present.}
+\item{object}{A SpatialExperiment object with assays 'data' and 'reference' present, or a list of SpatialExperiment objects.}
 
-\item{markers}{A character vector of markers matching, at least partially, to the rownames of your SpatialExperiment object.}
+\item{markers}{A character vector of markers matching, at least partially, to the rownames of your SpatialExperiment object(s).}
+
+\item{...}{Arguments to pass to infer_manual_thresholds_split (if a list is input)}
 }
 \value{
-The input SpatialExperiment object, with manual thresholds for each of the elements in markers added into the rowData under manual_thresholds
+The input SpatialExperiment object, with manual thresholds for all markers specified inserted in the rowData under manual_thresholds.
 }
 \description{
 Infer manual thresholds for marker intensities from pre-existing classifications
