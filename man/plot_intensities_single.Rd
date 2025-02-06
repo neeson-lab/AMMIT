@@ -30,7 +30,7 @@ A single ggplot density plot of the intensities for the marker selected.
 Plot a single marker intensity from an AMMIT SpatialExperiment Object
 }
 \examples{
-#' data("ammit_spe_dummy")
+data("ammit_spe_dummy")
 plot_intensities_spe(ammit_spe_dummy,
                  marker = "M7",
                  thresholds = "none",

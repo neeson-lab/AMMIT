@@ -157,7 +157,7 @@ plot_intensities_spe <- function(object,
 #' @export
 #'
 #' @examples
-#' #' data("ammit_spe_dummy")
+#' data("ammit_spe_dummy")
 #' plot_intensities_spe(ammit_spe_dummy,
 #'                  marker = "M7",
 #'                  thresholds = "none",
