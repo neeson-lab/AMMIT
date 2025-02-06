@@ -18,7 +18,7 @@ unmix_intensities_split(
 \arguments{
 \item{object}{A list of SpatialExperiment objects, each with assay 'data' present.}
 
-\item{markers}{Character; one or multiple markers found in the SpatialExperiment object to unmix, or "all" (default) to plot all markers.}
+\item{markers}{Character; one or multiple markers found in the SpatialExperiment object to unmix, or "all" (default) to unmix all markers.}
 
 \item{k}{Numeric; How many mixtures to derive from the intensity data. Will be recycled to match the number of markers. Markers can have different k values!}
 

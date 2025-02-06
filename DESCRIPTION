@@ -14,6 +14,7 @@ Imports:
     methods,
     mixsmsn,
     patchwork,
+    sn,
     SpatialExperiment,
     SummarizedExperiment,
     utils

@@ -9,7 +9,7 @@ infer_manual_thresholds(object, markers, ...)
 \arguments{
 \item{object}{A SpatialExperiment object with assays 'data' and 'reference' present, or a list of SpatialExperiment objects.}
 
-\item{markers}{A character vector of markers matching, at least partially, to the rownames of your SpatialExperiment object(s).}
+\item{markers}{A character vector of markers matching, at least partially, to the rownames of your SpatialExperiment object(s), or "all" (default) for all markers.}
 
 \item{...}{Arguments to pass to infer_manual_thresholds_split (if a list is input)}
 }

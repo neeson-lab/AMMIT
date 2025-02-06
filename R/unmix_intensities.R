@@ -1,7 +1,7 @@
 #' Unmix marker intensity data from an AMMIT SpatialExperiment object into multiple skew-normal distributions
 #'
 #' @param object A SpatialExperiment object with assay 'data' present, or a list of SpatialExperiment objects.
-#' @param markers Character; one or multiple markers found in the SpatialExperiment object to unmix, or "all" (default) to plot all markers.
+#' @param markers Character; one or multiple markers found in the SpatialExperiment object to unmix, or "all" (default) to unmix all markers.
 #' @param k Numeric; How many mixtures to derive from the intensity data. Will be recycled to match the number of markers. Markers can have different k values!
 #' @param downsample Numeric; If provided, how many cells to downsample intensity data to before unmixing. Default value is 15000. If NULL or non-numeric, no downsampling will be done.
 #' @param transformation Character; Passed to transform_intensities. Either "none" to use raw values, or one of "asinh" or "sqrt" to apply the respective transformation to the data. Defaults to "asinh".
@@ -61,7 +61,7 @@ unmix_intensities <- function(object,
 #' Unmix marker intensity data from a list of SpatialExperiment objects into multiple skew-normal distributions
 #'
 #' @param object A list of SpatialExperiment objects, each with assay 'data' present.
-#' @param markers Character; one or multiple markers found in the SpatialExperiment object to unmix, or "all" (default) to plot all markers.
+#' @param markers Character; one or multiple markers found in the SpatialExperiment object to unmix, or "all" (default) to unmix all markers.
 #' @param k Numeric; How many mixtures to derive from the intensity data. Will be recycled to match the number of markers. Markers can have different k values!
 #' @param downsample Numeric; If provided, how many cells to downsample intensity data to before unmixing. Default value is 15000. If NULL or non-numeric, no downsampling will be done.
 #' @param transformation Character; Passed to transform_intensities. Either "none" to use raw values, or one of "asinh" or "sqrt" to apply the respective transformation to the data. Defaults to "asinh".
@@ -95,22 +95,22 @@ unmix_intensities_split <- function(object,
     stop("Not all of the specified subsets are found in your list of objects.")
   }
 
-  for (region in subset) {
-    object[[region]] <- unmix_intensities_spe(object = object[[region]],
-                                              markers = markers,
-                                              k = k,
-                                              downsample = downsample,
-                                              transformation = transformation,
-                                              censor_zeroes = censor_zeroes,
-                                              ...)
-  }
+  object[subset] <- lapply(subset, \(region) {
+    unmix_intensities_spe(object = object[[region]],
+                          markers = markers,
+                          k = k,
+                          downsample = downsample,
+                          transformation = transformation,
+                          censor_zeroes = censor_zeroes,
+                          ...)
+  })
   return(object)
 }
 
 #' Unmix marker intensity data from a SpatialExperiment object into multiple skew-normal distributions
 #'
 #' @param object A SpatialExperiment object, with assay 'data' present.
-#' @param markers Character; one or multiple markers found in the SpatialExperiment object to unmix, or "all" (default) to plot all markers.
+#' @param markers Character; one or multiple markers found in the SpatialExperiment object to unmix, or "all" (default) to unmix all markers.
 #' @param k Numeric; How many mixtures to derive from the intensity data. Will be recycled to match the number of markers. Markers can have different k values!
 #' @param downsample Numeric; If provided, how many cells to downsample intensity data to before unmixing. Default value is 15000. If NULL or non-numeric, no downsampling will be done.
 #' @param transformation Character; Passed to transform_intensities. Either "none" to use raw values, or one of "asinh" or "sqrt" to apply the respective transformation to the data. Defaults to "asinh".
@@ -123,8 +123,8 @@ unmix_intensities_split <- function(object,
 #' @export
 #'
 #' @examples
-#' #' data("ammit_spe_dummy")
-#' ammit_spe_dummy <- unmix_intensities(ammit_spe_dummy, markers="all", k=2)
+#' data("ammit_spe_dummy")
+#' ammit_spe_dummy <- unmix_intensities(ammit_spe_dummy, markers="all", k=3)
 #' SummarizedExperiment::rowData(ammit_spe_dummy)["M1", ]
 unmix_intensities_spe <- function(object,
                                   markers,
@@ -163,6 +163,7 @@ unmix_intensities_spe <- function(object,
     k.actual <- k.frame[marker,]
     unmix <- mixsmsn::smsn.mix(matrix, nu = nu, g = k.actual, family = "Skew.normal", calc.im = F, iter.max = iter.max, ...)
     unmix$k <- k.actual
+    unmix$unmix_transformation <- transformation
     unmix$unmixed <- TRUE
     return(unmix)
   }, simplify = T)

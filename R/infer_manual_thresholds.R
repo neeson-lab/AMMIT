@@ -1,7 +1,7 @@
 #' Infer manual thresholds for marker intensities from pre-existing classifications
 #'
 #' @param object A SpatialExperiment object with assays 'data' and 'reference' present, or a list of SpatialExperiment objects.
-#' @param markers A character vector of markers matching, at least partially, to the rownames of your SpatialExperiment object(s).
+#' @param markers A character vector of markers matching, at least partially, to the rownames of your SpatialExperiment object(s), or "all" (default) for all markers.
 #' @param ... Arguments to pass to infer_manual_thresholds_split (if a list is input)
 #'
 #' @return The input SpatialExperiment object, with manual thresholds for all markers specified inserted in the rowData under manual_thresholds.
@@ -34,10 +34,12 @@ infer_manual_thresholds <- function(object, markers, ...) {
     if (!"data" %in% names(SummarizedExperiment::assays(object))) {
       stop("No intensity data found in your SpatialExperiment object. Have you added intensity data?")
       }
-    if (!any(markers %in% rownames(object))) {
-      stop("None of the specified markers were found in your SpatialExperiment object!")
+    if (length(markers)==1 && markers=="all") {
+        markers <- rownames(object)
+      } else if (!all(markers %in% rownames(object))) {
+        stop("Not all markers found in your SPE object.")
       }
-    if (!all(rownames(object) %in% markers)) {
+      if (!all(rownames(object) %in% markers)) {
       warning("The following markers were not specified, and manual thresholds for them will not be calculated: ", rownames(object)[!rownames(object) %in% markers])
       }
 
@@ -63,7 +65,7 @@ infer_manual_thresholds <- function(object, markers, ...) {
 #' Infer manual thresholds for marker intensities from pre-existing classifications on a list of SpatialExperiment objects
 #'
 #' @param object A list of SpatialExperiment objects, each with assays 'data' and 'reference' present.
-#' @param markers A character vector of markers matching, at least partially, to the rownames of your SpatialExperiment objects.
+#' @param markers A character vector of markers matching, at least partially, to the rownames of your SpatialExperiment objects, or "all" (default) for all markers.
 #' @param subset A subset of the names of the list of objects for which you wish to infer manual thresholds.
 #'
 #' @return The input list of SpatialExperiment objects, each with manual thresholds for all markers specified inserted in the rowData under manual_thresholds.
@@ -93,7 +95,9 @@ infer_manual_thresholds_split <- function(object, markers, subset=NULL) {
     if (!"data" %in% names(SummarizedExperiment::assays(object[[region]]))) {
       stop("No intensity data found in your SpatialExperiment object, in region: ", region, ". Have you added intensity data?")
     }
-    if (!any(markers %in% rownames(object[[region]]))) {
+    if (length(markers)==1 && markers=="all") {
+      markers <- rownames(object[[region]])
+    } else if (!all(markers %in% rownames(object[[region]]))) {
       stop("None of the specified markers were found in your SpatialExperiment object, in region: ", region, "!")
     }
     if (!all(rownames(object[[region]]) %in% markers)) {

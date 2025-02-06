@@ -19,7 +19,7 @@ unmix_intensities_spe(
 \arguments{
 \item{object}{A SpatialExperiment object, with assay 'data' present.}
 
-\item{markers}{Character; one or multiple markers found in the SpatialExperiment object to unmix, or "all" (default) to plot all markers.}
+\item{markers}{Character; one or multiple markers found in the SpatialExperiment object to unmix, or "all" (default) to unmix all markers.}
 
 \item{k}{Numeric; How many mixtures to derive from the intensity data. Will be recycled to match the number of markers. Markers can have different k values!}
 
@@ -42,7 +42,7 @@ The input object, with model parameters for the unmixed distributions for each m
 Unmix marker intensity data from a SpatialExperiment object into multiple skew-normal distributions
 }
 \examples{
-#' data("ammit_spe_dummy")
-ammit_spe_dummy <- unmix_intensities(ammit_spe_dummy, markers="all", k=2)
+data("ammit_spe_dummy")
+ammit_spe_dummy <- unmix_intensities(ammit_spe_dummy, markers="all", k=3)
 SummarizedExperiment::rowData(ammit_spe_dummy)["M1", ]
 }
