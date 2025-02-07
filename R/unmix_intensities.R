@@ -13,8 +13,8 @@
 #'
 #' @examples
 #' data("ammit_spe_dummy")
-#' ammit_spe_dummy <- unmix_intensities(ammit_spe_dummy, markers="all", k=2)
-#' SummarizedExperiment::rowData(ammit_spe_dummy)["M1", ]
+#' ammit_spe_dummy <- unmix_intensities(ammit_spe_dummy, markers="M7", k=2)
+#' SummarizedExperiment::rowData(ammit_spe_dummy)["M7", ]
 unmix_intensities <- function(object,
                               markers,
                               k,
@@ -75,8 +75,8 @@ unmix_intensities <- function(object,
 #' @examples
 #' data("ammit_spe_dummy")
 #' spe_list <- split_spe(ammit_spe_dummy, split.by="Analysis.Region")
-#' spe_list <- unmix_intensities(spe_list, markers="all", k=2, subset="Tumour")
-#' SummarizedExperiment::rowData(spe_list[["Tumour"]])["M1", ]
+#' spe_list <- unmix_intensities(spe_list, markers="M7", k=2, subset="Tumour")
+#' SummarizedExperiment::rowData(spe_list[["Tumour"]])["M7", ]
 unmix_intensities_split <- function(object,
                                     markers,
                                     k,
@@ -124,8 +124,8 @@ unmix_intensities_split <- function(object,
 #'
 #' @examples
 #' data("ammit_spe_dummy")
-#' ammit_spe_dummy <- unmix_intensities(ammit_spe_dummy, markers="all", k=3)
-#' SummarizedExperiment::rowData(ammit_spe_dummy)["M1", ]
+#' ammit_spe_dummy <- unmix_intensities(ammit_spe_dummy, markers="M7", k=3)
+#' SummarizedExperiment::rowData(ammit_spe_dummy)["M7", ]
 unmix_intensities_spe <- function(object,
                                   markers,
                                   k,
@@ -167,7 +167,16 @@ unmix_intensities_spe <- function(object,
     unmix$unmixed <- TRUE
     return(unmix)
   }, simplify = T)
-  new_rowdata <- cbind(SummarizedExperiment::rowData(object), t(models))
+
+  add <- data.frame(t(models))
+  missing.rows <- setdiff(rownames(object), rownames(add))
+  add$unmix_transformation <- transformation
+  add$unmixed <- TRUE
+  add <- dplyr::bind_rows(add, data.frame(row.names=missing.rows, unmixed=rep(FALSE, length(missing.rows))))
+  add <- add[rownames(object),]
+
+  new_rowdata <- cbind(SummarizedExperiment::rowData(object), add)
+
   SummarizedExperiment::rowData(object) <- new_rowdata
   return(object)
 }

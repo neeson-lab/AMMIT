@@ -41,6 +41,6 @@ Unmix marker intensity data from a list of SpatialExperiment objects into multip
 \examples{
 data("ammit_spe_dummy")
 spe_list <- split_spe(ammit_spe_dummy, split.by="Analysis.Region")
-spe_list <- unmix_intensities(spe_list, markers="all", k=2, subset="Tumour")
-SummarizedExperiment::rowData(spe_list[["Tumour"]])["M1", ]
+spe_list <- unmix_intensities(spe_list, markers="M7", k=2, subset="Tumour")
+SummarizedExperiment::rowData(spe_list[["Tumour"]])["M7", ]
 }

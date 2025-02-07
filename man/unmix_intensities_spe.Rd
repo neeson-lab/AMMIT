@@ -43,6 +43,6 @@ Unmix marker intensity data from a SpatialExperiment object into multiple skew-n
 }
 \examples{
 data("ammit_spe_dummy")
-ammit_spe_dummy <- unmix_intensities(ammit_spe_dummy, markers="all", k=3)
-SummarizedExperiment::rowData(ammit_spe_dummy)["M1", ]
+ammit_spe_dummy <- unmix_intensities(ammit_spe_dummy, markers="M7", k=3)
+SummarizedExperiment::rowData(ammit_spe_dummy)["M7", ]
 }

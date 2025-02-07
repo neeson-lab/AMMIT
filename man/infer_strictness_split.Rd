@@ -29,7 +29,7 @@ Infer the AMMIT strictness parameter required to derive manual threshold values 
 \examples{
 data("ammit_spe_dummy")
 spe_list <- split_spe(ammit_spe_dummy)
-spe_list <- infer_manual_thresholds(spe_list, markers = "all")
-spe_list <- unmix_intensities(spe_list, markers="all", k=3)
-infer_strictness(spe_list, markers = "all", return = "strictness")
+spe_list <- infer_manual_thresholds(spe_list, markers = "M7")
+spe_list <- unmix_intensities(spe_list, markers="M7", k=3)
+infer_strictness(spe_list, markers = "M7", return = "strictness")
 }

@@ -37,6 +37,6 @@ Unmix marker intensity data from an AMMIT SpatialExperiment object into multiple
 }
 \examples{
 data("ammit_spe_dummy")
-ammit_spe_dummy <- unmix_intensities(ammit_spe_dummy, markers="all", k=2)
-SummarizedExperiment::rowData(ammit_spe_dummy)["M1", ]
+ammit_spe_dummy <- unmix_intensities(ammit_spe_dummy, markers="M7", k=2)
+SummarizedExperiment::rowData(ammit_spe_dummy)["M7", ]
 }

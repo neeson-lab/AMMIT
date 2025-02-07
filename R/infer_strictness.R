@@ -10,9 +10,9 @@
 #'
 #' @examples
 #' data("ammit_spe_dummy")
-#' ammit_spe_dummy <- infer_manual_thresholds(ammit_spe_dummy, markers = "all")
-#' ammit_spe_dummy <- unmix_intensities(ammit_spe_dummy, markers="all", k=3)
-#' infer_strictness(ammit_spe_dummy, markers = "all", return = "strictness")
+#' ammit_spe_dummy <- infer_manual_thresholds(ammit_spe_dummy, markers = "M7")
+#' ammit_spe_dummy <- unmix_intensities(ammit_spe_dummy, markers="M7", k=3)
+#' infer_strictness(ammit_spe_dummy, markers = "M7", return = "strictness")
 infer_strictness <- function(object,
                              markers="all",
                              return="strictness",
@@ -53,9 +53,9 @@ infer_strictness <- function(object,
 #' @examples
 #' data("ammit_spe_dummy")
 #' spe_list <- split_spe(ammit_spe_dummy)
-#' spe_list <- infer_manual_thresholds(spe_list, markers = "all")
-#' spe_list <- unmix_intensities(spe_list, markers="all", k=3)
-#' infer_strictness(spe_list, markers = "all", return = "strictness")
+#' spe_list <- infer_manual_thresholds(spe_list, markers = "M7")
+#' spe_list <- unmix_intensities(spe_list, markers="M7", k=3)
+#' infer_strictness(spe_list, markers = "M7", return = "strictness")
 infer_strictness_split <- function(object,
                                    markers="all",
                                    return="strictness",
@@ -101,9 +101,9 @@ infer_strictness_split <- function(object,
 #'
 #' @examples
 #' data("ammit_spe_dummy")
-#' ammit_spe_dummy <- infer_manual_thresholds(ammit_spe_dummy, markers = "all")
-#' ammit_spe_dummy <- unmix_intensities(ammit_spe_dummy, markers="all", k=3)
-#' infer_strictness(ammit_spe_dummy, markers = "all", return = "strictness")
+#' ammit_spe_dummy <- infer_manual_thresholds(ammit_spe_dummy, markers = "M7")
+#' ammit_spe_dummy <- unmix_intensities(ammit_spe_dummy, markers="M7", k=3)
+#' infer_strictness(ammit_spe_dummy, markers = "M7", return = "strictness")
 infer_strictness_spe <- function(object,
                                  markers="all",
                                  return="strictness") {
@@ -118,6 +118,8 @@ infer_strictness_spe <- function(object,
   }
   if (!"unmixed" %in% colnames(SummarizedExperiment::rowData(object))) {
     stop("Unmixing has not been completed for this object! Please run unmix_intensities before inferring strictness.")
+  } else if (!all(SummarizedExperiment::rowData(object)[markers,"unmixed"])) {
+    stop("Unmixing has not completed for all the markers you specified! Please run unmix_intensities for the relevant markers.")
   }
 
   strictness <- sapply(markers, function(marker){
@@ -151,8 +153,11 @@ infer_strictness_spe <- function(object,
   if (return=="strictness") {
     return(strictness)
   } else if (return == "object") {
-    new.rowdata <- cbind(SummarizedExperiment::rowData(object), data.frame("inferred_strictness" = strictness))
-    SummarizedExperiment::rowData(object) <- new.rowdata
+    add <- data.frame(row.names=rownames(object))
+    add$inferred_strictness <- NA
+    add$inferred_strictness[match(names(strictness), rownames(object))] <- strictness
+    new_rowdata <- cbind(SummarizedExperiment::rowData(object), add)
+    SummarizedExperiment::rowData(object) <- new_rowdata
     return(object)
   } else { stop("Unrecognised option supplied for `return`") }
 }

@@ -21,7 +21,7 @@ Infer the AMMIT strictness parameter required to derive manual threshold values 
 }
 \examples{
 data("ammit_spe_dummy")
-ammit_spe_dummy <- infer_manual_thresholds(ammit_spe_dummy, markers = "all")
-ammit_spe_dummy <- unmix_intensities(ammit_spe_dummy, markers="all", k=3)
-infer_strictness(ammit_spe_dummy, markers = "all", return = "strictness")
+ammit_spe_dummy <- infer_manual_thresholds(ammit_spe_dummy, markers = "M7")
+ammit_spe_dummy <- unmix_intensities(ammit_spe_dummy, markers="M7", k=3)
+infer_strictness(ammit_spe_dummy, markers = "M7", return = "strictness")
 }
