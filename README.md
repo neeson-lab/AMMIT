@@ -6,9 +6,9 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-AMMIT is designed to streamline the processing of many mIHC samples, by
-applying a skew-normal mixture model trained on a small subset of
-samples.
+AMMIT is an R package from members of the Neeson Lab, designed to
+streamline the processing of many mIHC samples by applying a skew-normal
+mixture model trained on a small subset of samples.
 
 ## Installation
 
@@ -21,6 +21,13 @@ devtools::install_github("neeson-lab/AMMIT")
 ```
 
 ## Basic AMMIT workflow
+
+<figure>
+<img src="man/figures/ammit_package_workflow.png"
+alt="Workflow for using AMMIT to threshold a cohort of mIHC data." />
+<figcaption aria-hidden="true">Workflow for using AMMIT to threshold a
+cohort of mIHC data.</figcaption>
+</figure>
 
 ### Reading in your data
 
@@ -108,6 +115,7 @@ the rowData of the SpatialExperiment, as below:
 
 ``` r
 ammit_spe_dummy <- unmix_intensities(ammit_spe_dummy, markers="M7", k=2)
+# Pull the rowData for marker M7:
 SummarizedExperiment::rowData(ammit_spe_dummy)["M7", ]
 #> DataFrame with 1 row and 15 columns
 #>    manual_threshold                mu                sigma2             shape
@@ -132,4 +140,60 @@ plot_mixture(ammit_spe_dummy, markers="M7", thresholds="manual", transformation=
 ### Training: inferring the strictness parameter
 
 Before running AMMIT on your full cohort, you’ll first need to train the
-strictness parameter to be applied for each marker. This
+strictness parameter to be applied for each marker. This is a simple
+numeric value which instructs AMMIT on where (along the negative
+component probability distribution) to place the threshold. Using the
+`infer_strictness` function, we will get a strictness value such that
+the AMMIT threshold would be placed exactly where the manual threshold
+is. Doing this for 5-10 samples should give a good readout of a
+strictness parameter to apply to the full cohort for each marker.
+
+``` r
+strictness_m7 <- infer_strictness(ammit_spe_dummy, markers="M7", return="strictness")
+strictness_m7
+#>         M7 
+#> 0.04610125
+```
+
+As we can see, when we derive a threshold from the inferred strictness,
+the result is just the manual threshold we already had. In reality, when
+training the strictness on a variety of samples, we’ll get a range of
+values (hopefully tightly-distributed) from which we will estimate a
+strictness parameter.
+
+``` r
+# Get threshold for given strictness  (and store in rowData)
+ammit_spe_dummy <- get_ammit_thresholds(ammit_spe_dummy, markers="M7", strictness=strictness_m7, return="object")
+# Plot
+plot_mixture(ammit_spe_dummy, markers="M7", thresholds="both", transformation="asinh")
+```
+
+<img src="man/figures/README-unnamed-chunk-10-1.png" width="100%" />
+
+### Validation: testing a strictness parameter
+
+Let’s say we trained the strictness on a handful of samples, and the
+optimal value for M7 sits closer to 2 than 2.5. We simply re-derive the
+AMMIT threshold for the marker, and then plot to check.
+
+``` r
+# Get threshold for given strictness  (and store in rowData)
+ammit_spe_dummy <- get_ammit_thresholds(ammit_spe_dummy, markers="M7", strictness=3, return="object")
+# Plot
+plot_mixture(ammit_spe_dummy, markers="M7", thresholds="both", transformation="asinh")
+```
+
+<img src="man/figures/README-unnamed-chunk-11-1.png" width="100%" />
+
+## AMMIT Quality Control
+
+There are a handful of ways to check the results from AMMIT. These
+include: \* Checking model construction \* Checking thresholds against
+validation data \* Checking cell counts against validation data
+
+We might want an overview of how our thresholds compare to the manual
+threshold:
+
+``` r
+# doesn't exist yet oops 
+```
