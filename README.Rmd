@@ -77,7 +77,7 @@ ammit_spe_dummy <- infer_manual_thresholds(ammit_spe_dummy, eg_markers)
 
 We might like to examine our data at this stage. AMMIT allows for the basic plotting of the distribution of the marker intensities using the `plot_intensities` function. Let's take a look at the marker M7:
 
-```{r}
+```{r, fig.dim=c(10,7)}
 plot_intensities(ammit_spe_dummy,
                  markers = "M7",
                  thresholds = "manual",
@@ -101,7 +101,7 @@ SummarizedExperiment::rowData(ammit_spe_dummy)["M7", ]
 
 We can then plot the results of our unmixing with `plot_mixture`:
 
-```{r}
+```{r, fig.dim=c(10,7)}
 plot_mixture(ammit_spe_dummy, markers="M7", thresholds="manual", transformation="asinh")
 ```
   
@@ -116,7 +116,7 @@ strictness_m7
 
 As we can see, when we derive a threshold from the inferred strictness, the result is just the manual threshold we already had. In reality, when training the strictness on a variety of samples, we'll get a range of values (hopefully tightly-distributed) from which we will estimate a strictness parameter. 
 
-```{r}
+```{r, fig.dim=c(10,7)}
 # Get threshold for given strictness  (and store in rowData)
 ammit_spe_dummy <- calculate_ammit_thresholds(ammit_spe_dummy, markers="M7", strictness=strictness_m7, return="object")
 # Plot
@@ -127,7 +127,7 @@ plot_mixture(ammit_spe_dummy, markers="M7", thresholds="both", transformation="a
 
 Let's say we trained the strictness on a handful of samples, and the optimal value for M7 sits closer to 2 than 2.5. We simply re-derive the AMMIT threshold for the marker, and then plot to check. 
 
-```{r}
+```{r, fig.dim=c(10,7)}
 # Get threshold for given strictness  (and store in rowData)
 ammit_spe_dummy <- calculate_ammit_thresholds(ammit_spe_dummy, markers="M7", strictness=2, return="object")
 # Plot
