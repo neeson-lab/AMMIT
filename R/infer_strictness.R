@@ -138,7 +138,7 @@ infer_strictness_spe <- function(object,
       dplyr::mutate(mean=mu+scale*delta*coeff) |>
       dplyr::arrange(mean)
 
-    negative_distributions <- rowdata$idx[1:(k-1)]
+    negative_distributions <- 1:(k-1)
 
     sums <- do.call(sum, lapply(negative_distributions, FUN=\(id){
       rowdata$pii[id]*sn::psn(x=manual_threshold,
@@ -146,7 +146,7 @@ infer_strictness_spe <- function(object,
                               omega=rowdata$scale[id],
                               alpha=rowdata$shape[id])
     }))
-    strict <- - log10(1 - sums/sum(rowdata$pii[negative_distributions]))
+    strict <- -log10(1-sums/sum(rowdata$pii[negative_distributions]))
     return(strict)
   })
 

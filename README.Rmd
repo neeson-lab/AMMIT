@@ -118,7 +118,7 @@ As we can see, when we derive a threshold from the inferred strictness, the resu
 
 ```{r}
 # Get threshold for given strictness  (and store in rowData)
-ammit_spe_dummy <- get_ammit_thresholds(ammit_spe_dummy, markers="M7", strictness=strictness_m7, return="object")
+ammit_spe_dummy <- calculate_ammit_thresholds(ammit_spe_dummy, markers="M7", strictness=strictness_m7, return="object")
 # Plot
 plot_mixture(ammit_spe_dummy, markers="M7", thresholds="both", transformation="asinh")
 ```
@@ -129,7 +129,7 @@ Let's say we trained the strictness on a handful of samples, and the optimal val
 
 ```{r}
 # Get threshold for given strictness  (and store in rowData)
-ammit_spe_dummy <- get_ammit_thresholds(ammit_spe_dummy, markers="M7", strictness=3, return="object")
+ammit_spe_dummy <- calculate_ammit_thresholds(ammit_spe_dummy, markers="M7", strictness=2, return="object")
 # Plot
 plot_mixture(ammit_spe_dummy, markers="M7", thresholds="both", transformation="asinh")
 ```

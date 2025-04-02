@@ -120,10 +120,10 @@ SummarizedExperiment::rowData(ammit_spe_dummy)["M7", ]
 #> DataFrame with 1 row and 15 columns
 #>    manual_threshold                mu                sigma2             shape
 #>           <numeric>            <list>                <list>            <list>
-#> M7         0.500596 0.499878,0.233041 0.07337717,0.00736484 2.399441,0.523859
-#>                  pii     nu      aic      bic      edc      icl   iter      n
-#>               <list> <list>   <list>   <list>   <list>   <list> <list> <list>
-#> M7 0.468718,0.531282      0 -2577.29 -2526.89 -2451.95 -1774.53    190   9906
+#> M7         0.500596 0.232583,0.499737 0.00742819,0.07355334 0.534929,2.445787
+#>                  pii     nu      aic      bic     edc      icl   iter      n
+#>               <list> <list>   <list>   <list>  <list>   <list> <list> <list>
+#> M7 0.532261,0.467739      0 -2577.14 -2526.73 -2451.8 -1784.59    204   9906
 #>         k unmix_transformation   unmixed
 #>    <list>          <character> <logical>
 #> M7      2                asinh      TRUE
@@ -151,8 +151,8 @@ strictness parameter to apply to the full cohort for each marker.
 ``` r
 strictness_m7 <- infer_strictness(ammit_spe_dummy, markers="M7", return="strictness")
 strictness_m7
-#>         M7 
-#> 0.04610125
+#>       M7 
+#> 2.435991
 ```
 
 As we can see, when we derive a threshold from the inferred strictness,
@@ -163,7 +163,7 @@ strictness parameter.
 
 ``` r
 # Get threshold for given strictness  (and store in rowData)
-ammit_spe_dummy <- get_ammit_thresholds(ammit_spe_dummy, markers="M7", strictness=strictness_m7, return="object")
+ammit_spe_dummy <- calculate_ammit_thresholds(ammit_spe_dummy, markers="M7", strictness=strictness_m7, return="object")
 # Plot
 plot_mixture(ammit_spe_dummy, markers="M7", thresholds="both", transformation="asinh")
 ```
@@ -178,7 +178,7 @@ AMMIT threshold for the marker, and then plot to check.
 
 ``` r
 # Get threshold for given strictness  (and store in rowData)
-ammit_spe_dummy <- get_ammit_thresholds(ammit_spe_dummy, markers="M7", strictness=3, return="object")
+ammit_spe_dummy <- calculate_ammit_thresholds(ammit_spe_dummy, markers="M7", strictness=2, return="object")
 # Plot
 plot_mixture(ammit_spe_dummy, markers="M7", thresholds="both", transformation="asinh")
 ```

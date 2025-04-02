@@ -14,8 +14,8 @@
 #' ammit_spe_dummy <- infer_manual_thresholds(ammit_spe_dummy, markers = "M7")
 #' ammit_spe_dummy <- unmix_intensities(ammit_spe_dummy, markers="M7", k=3)
 #' strictness <- infer_strictness(ammit_spe_dummy, markers = "M7", return = "strictness")
-#' get_ammit_thresholds(ammit_spe_dummy, markers = "M7", strictness = strictness, return = "thresholds")
-get_ammit_thresholds <- function (object,
+#' calculate_ammit_thresholds(ammit_spe_dummy, markers = "M7", strictness = strictness, return = "thresholds")
+calculate_ammit_thresholds <- function (object,
                                   markers,
                                   strictness,
                                   return = "object",
@@ -28,7 +28,7 @@ get_ammit_thresholds <- function (object,
   }
 
   if (methods::is(object, "list")) {
-    object <- get_ammit_thresholds_split(object = object,
+    object <- calculate_ammit_thresholds_split(object = object,
                                      markers = markers,
                                      strictness = strictness,
                                      return = return,
@@ -36,7 +36,7 @@ get_ammit_thresholds <- function (object,
   }
 
   if (methods::is(object, "SpatialExperiment")) {
-    object <- get_ammit_thresholds_spe(object = object,
+    object <- calculate_ammit_thresholds_spe(object = object,
                                    markers = markers,
                                    strictness = strictness,
                                    return = return,
@@ -61,8 +61,8 @@ get_ammit_thresholds <- function (object,
 #' spe_list <- infer_manual_thresholds(spe_list, markers = "M7")
 #' spe_list <- unmix_intensities(spe_list, markers="M7", k=3)
 #' strictness <- infer_strictness(spe_list, markers = "M7", return = "strictness")
-#' get_ammit_thresholds(spe_list, markers = "M7", strictness = strictness, return = "thresholds")
-get_ammit_thresholds_split <- function (object,
+#' calculate_ammit_thresholds(spe_list, markers = "M7", strictness = strictness, return = "thresholds")
+calculate_ammit_thresholds_split <- function (object,
                                         markers,
                                         strictness,
                                         return = "object",
@@ -82,7 +82,7 @@ get_ammit_thresholds_split <- function (object,
       if (methods::is(strictness, "list")) {
         strictness <- strictness[[region]]
       }
-      get_ammit_thresholds_spe(object = object[[region]],
+      calculate_ammit_thresholds_spe(object = object[[region]],
                            markers = markers,
                            strictness = strictness,
                            return = "thresholds")
@@ -94,7 +94,7 @@ get_ammit_thresholds_split <- function (object,
       if (methods::is(strictness, "list")) {
         strictness <- strictness[[region]]
       }
-      get_ammit_thresholds_spe(object = object[[region]],
+      calculate_ammit_thresholds_spe(object = object[[region]],
                            markers = markers,
                            strictness = strictness,
                            return = "object")
@@ -119,8 +119,8 @@ get_ammit_thresholds_split <- function (object,
 #' ammit_spe_dummy <- infer_manual_thresholds(ammit_spe_dummy, markers = "M7")
 #' ammit_spe_dummy <- unmix_intensities(ammit_spe_dummy, markers="M7", k=3)
 #' strictness <- infer_strictness(ammit_spe_dummy, markers = "M7", return = "strictness")
-#' get_ammit_thresholds(ammit_spe_dummy, markers = "M7", strictness = strictness, return = "thresholds")
-get_ammit_thresholds_spe <- function (object,
+#' calculate_ammit_thresholds(ammit_spe_dummy, markers = "M7", strictness = strictness, return = "thresholds")
+calculate_ammit_thresholds_spe <- function (object,
                                       markers,
                                       strictness,
                                       return = "object") {
@@ -163,7 +163,7 @@ get_ammit_thresholds_spe <- function (object,
       dplyr::mutate(mean=mu+scale*delta*coeff) |>
       dplyr::arrange(mean)
 
-    negative_distributions <- rowdata$idx[1:(k-1)]
+    negative_distributions <- 1:(k-1)
 
     p_thresh <- 1-10^-strict
 
@@ -195,8 +195,13 @@ get_ammit_thresholds_spe <- function (object,
     add <- data.frame(row.names=rownames(object))
     add$ammit_threshold <- NA
     add$ammit_threshold[match(names(ammit_thresholds), rownames(object))] <- ammit_thresholds
-    new_rowdata <- cbind(SummarizedExperiment::rowData(object), add)
-    SummarizedExperiment::rowData(object) <- new_rowdata
+    if ("ammit_threshold" %in% colnames(SummarizedExperiment::rowData(object))) {
+      merge <- cbind(add, "old"=SummarizedExperiment::rowData(object)$ammit_threshold)
+      add <- merge |>
+        dplyr::mutate(ammit_threshold=dplyr::coalesce(ammit_threshold, old)) |>
+        dplyr::select(ammit_threshold)
+    }
+    SummarizedExperiment::rowData(object)[,"ammit_threshold"] <- add
     return(object)
   } else { stop("Unrecognised option supplied for `return`") }
 

@@ -36,7 +36,7 @@ Plot the unmixed distributions of marker intensities of an AMMIT SpatialExperime
 data("ammit_spe_dummy")
 ammit_spe_dummy <- infer_manual_thresholds(ammit_spe_dummy, markers = "M7")
 ammit_spe_dummy <- unmix_intensities(ammit_spe_dummy, markers="M7", k=2)
-ammit_spe_dummy <- get_ammit_thresholds(ammit_spe_dummy,
+ammit_spe_dummy <- calculate_ammit_thresholds(ammit_spe_dummy,
                                         markers = "M7",
                                         strictness = 0.1,
                                         return = "object")

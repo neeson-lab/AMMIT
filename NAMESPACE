@@ -2,7 +2,7 @@
 
 export(build_ammit_spe)
 export(build_ammit_spe_HALO)
-export(get_ammit_thresholds)
+export(calculate_ammit_thresholds)
 export(infer_manual_thresholds)
 export(infer_manual_thresholds_split)
 export(infer_strictness)
