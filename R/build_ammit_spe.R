@@ -103,6 +103,7 @@ build_ammit_spe_HALO = function (HALO_filepath,
 
   # find intensity columns
   marker.matches <- lapply(markers, \ (x) grep(colnames(data), pattern=paste0(x, ".*Intensity")))
+  if (any(sapply(marker.matches, length)==0)) { stop("One or more markers not found!") }
   if (any(sapply(marker.matches, length)>1)) {
     if (is.null(locations)) {
       warning("The following markers matched to more than one intensity column: ", paste(markers[sapply(marker.matches, length) > 1], collapse=" "))
@@ -118,6 +119,18 @@ build_ammit_spe_HALO = function (HALO_filepath,
   intensity_matrix <- data[, marker.matches]
   names(intensity_matrix) <- markers
   intensity_matrix <- t(intensity_matrix)
+
+
+  meta_selection <- grep(colnames(data), pattern=paste(markers, collapse="|"), value = TRUE, invert = TRUE)
+  if (filter_dapi) {
+    dapi.column <- grep(colnames(data), pattern="DAPI.*Classification", value = TRUE)[1]
+  }
+  col_data <- data[, meta_selection]
+
+
+  spatial_coords <- data.frame("Cell.X.Position"=(data$XMin+data$XMax)/2,
+                               "Cell.Y.Position"=(data$YMin+data$YMax)/2) |>
+    as.matrix()
 
   if (reference) {
     marker.matches <- lapply(markers, \ (x) grep(colnames(data), pattern=paste0(x, ".*Classification")))
@@ -136,20 +149,10 @@ build_ammit_spe_HALO = function (HALO_filepath,
     reference_matrix <- data[, marker.matches]
     names(reference_matrix) <- markers
     reference_matrix <- t(reference_matrix)
+    spe <- SpatialExperiment::SpatialExperiment(assays=list("data"=intensity_matrix, "reference"=reference_matrix), colData = col_data, spatialCoords = spatial_coords)
+  } else {
+    spe <- SpatialExperiment::SpatialExperiment(assays=list("data"=intensity_matrix), colData = col_data, spatialCoords = spatial_coords)
   }
-
-  meta_selection <- grep(colnames(data), pattern=paste(markers, collapse="|"), value = TRUE, invert = TRUE)
-  if (filter_dapi) {
-    dapi.column <- grep(colnames(data), pattern="DAPI.*Classification", value = TRUE)[1]
-  }
-  col_data <- data[, meta_selection]
-
-
-  spatial_coords <- data.frame("Cell.X.Position"=(data$XMin+data$XMax)/2,
-                               "Cell.Y.Position"=(data$YMin+data$YMax)/2) |>
-    as.matrix()
-
-  spe <- SpatialExperiment::SpatialExperiment(assays=list("data"=intensity_matrix, "reference"=reference_matrix), colData = col_data, spatialCoords = spatial_coords)
 
   if (filter_dapi) {
     spe <- spe[,data[,dapi.column] == 1]
