@@ -120,6 +120,15 @@ build_ammit_spe_HALO = function (HALO_filepath,
   names(intensity_matrix) <- markers
   intensity_matrix <- t(intensity_matrix)
 
+  # check for NAs in intensity matrix
+  if (any(apply(intensity_matrix, MARGIN=2, \(x) any(is.na(x))))) {
+    warning("Some of your intensity values are NA. Removing these 'cells'... ")
+    rows_to_remove <- which(apply(intensity_matrix, MARGIN=2, \(x) any(is.na(x))))
+    warning("'cells' removed: ", length(rows_to_remove))
+    intensity_matrix <- intensity_matrix[,-rows_to_remove]
+    data <- data[-rows_to_remove,]
+  }
+
 
   meta_selection <- grep(colnames(data), pattern=paste(markers, collapse="|"), value = TRUE, invert = TRUE)
   if (filter_dapi) {
