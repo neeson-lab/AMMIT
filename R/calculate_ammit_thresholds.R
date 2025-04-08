@@ -130,9 +130,6 @@ calculate_ammit_thresholds_spe <- function (object,
     stop("Not all markers found in your SPE object.")
   }
 
-  if (!"manual_threshold" %in% colnames(SummarizedExperiment::rowData(object))) {
-    stop("Manual thresholds not found! Please enter them into rowData as 'manual_threshold', or run infer_manual_thresholds on this object!")
-  }
   if (!"unmixed" %in% colnames(SummarizedExperiment::rowData(object))) {
     stop("Unmixing has not been completed for this object! Please run unmix_intensities before deriving the AMMIT threshold.")
   } else if (!all(SummarizedExperiment::rowData(object)[markers,"unmixed"])) {
@@ -148,9 +145,6 @@ calculate_ammit_thresholds_spe <- function (object,
     rowdata <- SummarizedExperiment::rowData(object)[marker, ]
 
     strict <- strictness[match(marker, markers)]
-
-    manual_threshold <- rowdata$manual_threshold
-    manual_threshold <- transform_intensities(manual_threshold, method=unique(rowdata$unmix_transformation))
 
     rowdata <- data.frame(unlist(rowdata))
     colnames(rowdata) <- gsub(colnames(rowdata), pattern=paste0("\\.", marker, "$"), replacement="")

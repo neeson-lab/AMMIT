@@ -1,6 +1,6 @@
 Package: AMMIT
 Title: Automated mIHC Marker Intensity Thresholds
-Version: 0.0.0.9010
+Version: 0.0.0.901
 Authors@R: 
     person("Patrick", "Crock", c("Francis", "Gerard"), "patrick.crock@petermac.org", role = c("aut", "cre"),
           comment = c(ORCID = "0009-0004-5815-099X"))
